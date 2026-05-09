@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Study.LabWork2.Abstractions.Feature.Task1.SubTask1;
 using Study.LabWork2.Abstractions.Feature.Task1.SubTask1.DtoModels;
 
@@ -8,20 +9,23 @@ namespace Study.LabWork2.Feature.Task1.SubTask1;
 /// </summary>
 public sealed class MutexService : IPrimeCounter
 {
+    /// <summary>
+    /// Реализация функции подсчета простых чисел на основе mutex
+    /// </summary>
     public PrimeCountResultDto CountPrimes(int start, int end, int threadCount)
     {
         int total = 0;
         var mutex = new Mutex();
         var threads = new Thread[threadCount];
         var foundPrimes = new List<int>();
-        int range = (end - start) / threadCount;
+        int range = (end - start + 1) / threadCount;
 
         var stopwatch = Stopwatch.StartNew();
 
         for (int i = 0; i < threadCount; i++)
         {
             int localStart = start + i * range;
-            int localEnd = (i == threadCount - 1) ? end : localStart + range;
+            int localEnd = (i == threadCount - 1) ? end : localStart + range - 1;
 
             threads[i] = new Thread(() =>
             {
@@ -60,8 +64,10 @@ public sealed class MutexService : IPrimeCounter
             FoundPrimes = foundPrimes
         };
     }
-
-    static public string GetVersionName() => "Mutex";
+    /// <summary>
+    /// Реализация функции вывода имени - mutex
+    /// </summary>
+    public string GetVersionName() => "Mutex";
 
     //public string GetVersionName() => throw new NotImplementedException();
 }

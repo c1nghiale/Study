@@ -9,12 +9,15 @@ namespace Study.LabWork2.Feature.Task1.SubTask1;
 /// </summary>
 public sealed class SemaphoreService : IPrimeCounter
 {
+    /// <summary>
+    /// Реализация функции подсчета простых чисел на основе Semaphore
+    /// </summary>
     public PrimeCountResultDto CountPrimes(int start, int end, int threadCount)
     {
         var semaphore = new Semaphore(1, 1);
         var threads = new Thread[threadCount];
         var total = 0;
-        int range = (end - start) / threadCount;
+        int range = (end - start + 1) / threadCount;
         var TotalPrimes = new List<int>();
 
         var stopwatch = Stopwatch.StartNew();
@@ -22,14 +25,14 @@ public sealed class SemaphoreService : IPrimeCounter
         for (int i = 0; i < threadCount; ++i)
         {
             int localStart = start + i * range;
-            int localEnd = (i == threadCount - 1) ? end : localStart + range;
+            int localEnd = (i == threadCount - 1) ? end : localStart + range - 1;
 
             threads[i] = new Thread(() =>
             {
-                localCnt = 0;
-                localPrimes = new List<int>();
+                var localCnt = 0;
+                var localPrimes = new List<int>();
 
-                for (int num = localStart; num < localEnd; ++num)
+                for (int num = localStart; num <= localEnd; ++num)
                 {
                     if (PrimeMath.IsPrime(num))
                     {
@@ -37,8 +40,8 @@ public sealed class SemaphoreService : IPrimeCounter
                         localPrimes.Add(num);
                     }
                 }
-                semaphore.Wait();
-                try { total += totalCnt; foundPrimes.AddRange(localPrimes); }
+                semaphore.WaitOne();
+                try { total += localCnt; TotalPrimes.AddRange(localPrimes); }
                 finally { semaphore.Release(); }
             });
             threads[i].Start();
@@ -52,10 +55,13 @@ public sealed class SemaphoreService : IPrimeCounter
             ExecutionTime = stopwatch.Elapsed,
             ThreadCount = threadCount,
             SynchronizationType = GetVersionName(),
-            FoundPrimes = foundPrimes
+            FoundPrimes = TotalPrimes
         };
 
     }
 
-    static public string GetVersionName() => "Semaphore";
+    /// <summary>
+    /// Semaphore
+    /// </summary>
+    public string GetVersionName() => "Semaphore";
 }
