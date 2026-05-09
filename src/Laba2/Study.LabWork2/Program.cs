@@ -19,7 +19,7 @@ public static class Program
             new SemaphoreService()
         };
 
-        int start = 1, end = 1_000_000, threadCount = 1; //10 ядер по 1 потоку на каждое
+        int start = 1, end = 1_000_000, threadCount = 10; //10 ядер по 1 потоку на каждое
 
         Console.WriteLine($"Диапазон: {start}-{end}, потоков: {threadCount}\n");
 

@@ -1,76 +1,108 @@
+using Study.LabWork2.Abstractions.Feature.Task1.SubTask1;
 using Study.LabWork2.Feature.Task1.SubTask1;
 namespace Study.LabWork2.UnitTests.Feature.Task1.SubTask1;
 
+/// <summary>
+/// Реализация юниттестов для MonitorService
+/// </summary>
 [TestFixture]
 public sealed class MonitorServiceTests
 {
     private readonly MonitorService _service = new();
 
-    [Fact]
+    /// <summary>
+    /// Реализация юниттестов для MonitorService
+    /// </summary>
+    [Test]
     public void CountPrimes_SmallRange_ReturnsCorrectCount()
     {
         var result = _service.CountPrimes(1, 10, 2);
-        Assert.Equal(4, result.PrimeCount);
+        Assert.That(result.PrimeCount, Is.EqualTo(4));
     }
 
-
-    [Fact]
+    /// <summary>
+    /// Реализация юниттестов для MonitorService
+    /// </summary>
+    [Test]
     public void CountPrimes_LargeRange_ReturnCorrectNum()
     {
-        var result = _service.CoutPrime(1, 10000, 4);
-        Assert.Equal(1229, result.PrimeCount);
+        var result = _service.CountPrimes(1, 10000, 4);
+        Assert.That(result.PrimeCount, Is.EqualTo(1229));
     }
 
-    [Theory]
-    [InlineData(1)]
-    [InlineData(2)]
-    [InlineData(4)]
-    [InlineData(6)]
-    public void CountPrimes_DefferentThreadsCounts_SameResult(int threadCount)
+    /// <summary>
+    /// Реализация юниттестов для MonitorService
+    /// </summary>
+    [Test]
+    [TestCase(1)]
+    [TestCase(2)]
+    [TestCase(4)]
+    [TestCase(6)]
+    public void CountPrimes_DefferentThrTheeadsCounts_SameResult(int threadCount)
     {
-        var result = _service.CoutPrime(1, 10000, threadCount);
-        Assert.Equal(1229, result.PrimeCount);
+        var result = _service.CountPrimes(1, 10000, threadCount);
+        Assert.That(result.PrimeCount, Is.EqualTo(1229));
     }
 
-    [Fact]
+    /// <summary>
+    /// Реализация юниттестов для MonitorService
+    /// </summary>
+    [Test]
     public void CountPrimes_ReturnsCorrectThreadCount()
     {
         var result = _service.CountPrimes(1, 100, 4);
-        Assert.Equal(4, result.ThreadCount);
+        Assert.That(result.ThreadCount, Is.EqualTo(4));
     }
 
-    [Fact]
+    /// <summary>
+    /// Реализация юниттестов для MonitorService
+    /// </summary>
+    [Test]
     public void CountPrimes_ReturnsSynchronizationType()
     {
         var result = _service.CountPrimes(1, 100, 4);
-        Assert.Equal("Monitor", result.SynchronizationType);
+        Assert.That(result.SynchronizationType, Is.EqualTo("Monitor"));
     }
 
-    [Fact]
+
+    /// <summary>
+    /// Реализация юниттестов для MonitorService
+    /// </summary>
+    [Test]
     public void CountPrimes_FoundPrimesMatchCount()
     {
         var result = _service.CountPrimes(1, 100, 4);
-        Assert.Equal(result.PrimeCount, result.FoundPrimes.Count);
+        Assert.That(result.PrimeCount, Is.EqualTo(result.FoundPrimes.Count));
     }
 
-    [Fact]
+    /// <summary>
+    /// Реализация юниттестов для MonitorService
+    /// </summary>
+    [Test]
     public void CountPrimes_ExecutionTimeIsPositive()
     {
         var result = _service.CountPrimes(1, 10000, 4);
-        Assert.True(result.ExecutionTime > TimeSpan.Zero);
+        var condition = result.ExecutionTime > TimeSpan.Zero;
+        Assert.That(condition, Is.True);
     }
 
-    [Fact]
+    /// <summary>
+    /// Реализация юниттестов для MonitorService
+    /// </summary>
+    [Test]
     public void IsValid_CorrectExpected_ReturnsTrue()
     {
         var result = _service.CountPrimes(1, 10000, 4);
-        Assert.True(result.IsValid(1229));
+        var condition = result.IsValid(1229);
+        Assert.That(condition, Is.True);
     }
 
-    // GetVersionName
-    [Fact]
+    /// <summary>
+    /// Реализация юниттестов для MonitorService
+    /// </summary>
+    [Test]
     public void GetVersionName_ReturnsMonitor()
     {
-        Assert.Equal("Monitor", _service.GetVersionName());
+        Assert.That(_service.GetVersionName(), Is.EqualTo("Monitor"));
     }
 }
